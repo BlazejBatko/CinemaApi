@@ -29,14 +29,16 @@ namespace CinemaApi.Controllers
 
         [HttpPost]
         public IActionResult Register([FromBody] User user)
-        {
+        { 
+            //sprawdzamy czy istnieje juz uzytkownik o podanym adresie email
             var userWithSameEmail = _dbContext.Users.Where(u => u.Email == user.Email).SingleOrDefault();
             if (userWithSameEmail != null)
             {
                 return BadRequest("User with same email already exists");
             }
             var userObj = new User
-            {
+            {   
+                //Tworzenie uzytkownika hashując hasło
                 Name = user.Name,
                 Email = user.Email,
                 Password = SecurePasswordHasherHelper.Hash(user.Password),
@@ -49,12 +51,14 @@ namespace CinemaApi.Controllers
 
         [HttpPost]
         public IActionResult Login([FromBody] User user)
-        {
+        {   
+            //Sprawdzanie czy w bazie danych jest uzytkownik o danym adresie email
             var userEmail = _dbContext.Users.FirstOrDefault(u => u.Email == user.Email);
             if (userEmail == null)
             {
                 return NotFound();
             }
+            //weryfikowanie wprowadzonych przez uzytkownika danych
             if (!SecurePasswordHasherHelper.Verify(user.Password, userEmail.Password))
             {
                 return Unauthorized();
@@ -66,6 +70,7 @@ namespace CinemaApi.Controllers
                new Claim(ClaimTypes.Email, user.Email),
                new Claim(ClaimTypes.Role,userEmail.Role)
             };
+            //Generowanie tokenu JSON web Token
             var token = _auth.GenerateAccessToken(claims);
             return new ObjectResult(new
             {
