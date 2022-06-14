@@ -34,10 +34,12 @@ namespace CinemaApi
             services.AddMvc().AddXmlSerializerFormatters();
             services.AddDbContext<CinemaDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("CinemaDbConnection")));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                //autoryzacja JwtBearer tokenem
               .AddJwtBearer(options =>
               {
                   options.TokenValidationParameters = new TokenValidationParameters
                   {
+                      //parametry tokenu
                       ValidateIssuer = true,
                       ValidateAudience = true,
                       ValidateLifetime = true,

@@ -20,11 +20,12 @@ namespace CinemaApi.Controllers
         {
             _dbContext = dbContext;
         }
-
+        //Pobieranie wszystkich filmow 
         [Authorize]
         [HttpGet("[action]")]
         public IActionResult AllMovies(string sort, int? pageNumber, int? pageSize)
         {
+            //if null
             var currentPageNumber = pageNumber ?? 1;
             var currentPageSize = pageSize ?? 5;
             var movies = from movie in _dbContext.Movies
@@ -38,7 +39,7 @@ namespace CinemaApi.Controllers
                              Genre = movie.Genre,
                              ImageUrl = movie.ImageUrl
                          };
-
+            //SORTOWANIE FILMÓW
             switch (sort)
             {
                 case "desc":
@@ -49,7 +50,7 @@ namespace CinemaApi.Controllers
                     return Ok(movies.Skip((currentPageNumber - 1) * currentPageSize).Take(currentPageSize));
             }
         }
-
+        //Pobieranie po Id
         [Authorize]
         [HttpGet("[action]/{id}")]
         public IActionResult MovieDetail(int id)
@@ -61,7 +62,7 @@ namespace CinemaApi.Controllers
             }
             return Ok(movie);
         }
-
+        //Pobieranie po nazwie filmu
         [Authorize]
         [HttpGet("[action]")]
         public IActionResult FindMovies(string movieName)
@@ -78,7 +79,7 @@ namespace CinemaApi.Controllers
         }
 
 
-
+        //POST
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Post([FromForm] Movie movieObj)
@@ -97,6 +98,7 @@ namespace CinemaApi.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
+        //EDIT
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromForm] Movie movieObj)
@@ -131,7 +133,7 @@ namespace CinemaApi.Controllers
                 return Ok("Record updated successfully");
             }
         }
-
+        //DELETE
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)

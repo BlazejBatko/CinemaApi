@@ -19,7 +19,7 @@ namespace CinemaApi.Controllers
         {
             _dbContext = dbContext;
         }
-
+        //Dodawanie rezerwacji
         [Authorize]
         [HttpPost]
         public IActionResult Post([FromBody] Reservation reservationObj)
@@ -30,6 +30,7 @@ namespace CinemaApi.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
+        //Pobieranie zawartosci rezerwacji
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetReservations()
@@ -47,7 +48,7 @@ namespace CinemaApi.Controllers
             return Ok(reservations);
         }
 
-
+        //Pobieranie zawartosci rezerwacji po ID
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public IActionResult GetReservationDetail(int id)
@@ -71,7 +72,7 @@ namespace CinemaApi.Controllers
                                      }).FirstOrDefault();
             return Ok(reservationResult);
         }
-
+        //Usuwanie rezerwacji
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
